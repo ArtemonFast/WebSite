@@ -1,10 +1,65 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: lightgray;
-  background-size: cover;
+  background-color: #d3d3d3;
 }
 
-.text {
-  font-family: "Comic Sans MC", sans-serif;
+.posts {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.post {
+  margin-bottom: 20px;
+  background-color: #b8b8b8;         /* серый, как старые сайты */
+  border: 3px double #800080;        /* двойная фиолетовая рамка */
+  padding: 15px;
+}
+
+.post__link {
+  color: #000080;                    /* классический тёмно-синий */
+  font-family: "Times New Roman", serif;
+}
+
+.post__title {
+  font-size: 22px;
+  margin-bottom: 10px;
+  text-decoration: underline;        /* как ссылка в 90-х */
+}
+
+.post__desc {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.post__date {
+  color: #414040;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.post-full {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #b8b8b8;
+  border: 3px double #800080;
+  font-family: "Times New Roman", serif;
+}
+
+.post-full__title {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.post-full__date {
+  color: #414040;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.post-full p {
+  margin: 15px 0;
+  line-height: 1.5;    /* в 90-х такого не было, но читать приятнее */
 }

@@ -1,6 +1,6 @@
 :root {
-  --dark: black;
-  --gray: gray;
+  --text-active black;
+  --text-muted: gray;
   --purple: purple;
 }
 
@@ -38,7 +38,7 @@ body {
   font-size: 16px;
   /*letter-spacing: -0.47;*/
   letter-spacing: -1px;
-  color: var(--gray);
+  color: var(--text-muted);
   text-decoration: none;
 }
 
@@ -48,20 +48,45 @@ ul {
 
 a {
   text-decoration: none;
-  font-family: "Comic Sans MC", sans-serif;
+  font-family: "Comic Sans MS", sans-serif;
 }
 
 .head__list-link.active {
-  color: var(--dark);
+  color: var(--text-active);
   border-bottom: 2px solid var(--purple);
   padding-bottom: 5px;
   transition: color 0.3s;
 }
 
 .head__list-link:hover {
-  color: var(--dark);
+  color: var(--text-active);
 }
 
 .headline {
   padding-bottom: 20px;
+  text-align: center;
+}
+
+.foot {
+  text-align: center;
+  padding: 20px;
+  font-family: "Times New Roman", serif;
+  color: #404040;
+}
+
+.foot__copy {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.foot__note {
+  font-size: 12px;
+  font-style: italic;
+  color: #808080;
+}
+
+.foot hr {
+  border: none;
+  border-top: 2px ridge #800080;    /* та же фиолетовая тема */
+  margin-bottom: 15px;
 }
