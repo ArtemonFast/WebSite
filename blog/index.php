@@ -1,16 +1,14 @@
+<?php
+$title = 'Blog programmer';
+$description = 'It\'s my blog. I write here my thoughts and my reaction on news.';
+$styles = ['/blog/blog.css'];
+?>
 <!DOCTYPE html>
 <?php $active = 'blog'; ?>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="It's my blog. I write here my thoughts and my reaction on news.">
-    <title>DAF inc. - Blog</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/blog/blog.css">
-    <link rel="shortcut icon" href="/Assets/images/icon.jpg" type="image/x-icon">
-</head>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php'; ?>
 <body>
+  <h1 class="headline">Blog Programmer</h1>
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php'; ?>
   <main>
     <section class="posts">
