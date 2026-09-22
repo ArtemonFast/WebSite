@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: lightgray;
+  background-size: cover;
+}
+
+.text {
+  font-family: "Comic Sans MC", sans-serif;
+}

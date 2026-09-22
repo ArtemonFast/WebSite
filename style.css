@@ -9,6 +9,10 @@
     padding: 0;
 }
 
+body {
+  background-color: lightgray;
+}
+
 .head {
     padding: 30px 0 30px 0;
 }
@@ -55,4 +59,8 @@ a {
 
 .head__list-link:hover {
   color: var(--dark);
+}
+
+.headline {
+  padding-bottom: 20px;
 }
