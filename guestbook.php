@@ -13,16 +13,63 @@ $active = 'guestbook';
 <body>
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php'; ?>
 
-  <main>
-    <section class="page-stub">
-      <p class="page-stub__text">
-        Раздел в разработке. Скоро здесь можно будет общаться.
-      </p>
-      <p class="page-stub__text">
-        А пока — загляни в <a href="/blog/index.php">блог</a>.
-      </p>
-    </section>
-  </main>
+<main>
+  <section class="guestbook">
+    <h1 class="guestbook__title">Guestbook</h1>
+    <hr>
+
+    <?php
+    $errors = [];
+    $name = '';
+    $message = '';
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $name = trim($_POST['name'] ?? '');
+        $message = trim($_POST['message'] ?? '');
+
+        if ($name === '') {
+            $errors[] = 'Имя не может быть пустым.';
+        } elseif (mb_strlen($name) > 50) {
+            $errors[] = 'Имя слишком длинное (максимум 50 символов).';
+        }
+
+        if ($message === '') {
+            $errors[] = 'Сообщение не может быть пустым.';
+        } elseif (mb_strlen($message) > 1000) {
+            $errors[] = 'Сообщение слишком длинное (максимум 1000 символов).';
+        }
+
+        if (empty($errors)) {
+            // Всё ок — потом тут будем сохранять
+            echo '<p class="guestbook__ok">Форма прошла валидацию! Готово к сохранению.</p>';
+        }
+    }
+    ?>
+
+    <?php if (!empty($errors)): ?>
+      <div class="guestbook__errors">
+        <strong>Ошибки:</strong>
+        <ul>
+          <?php foreach ($errors as $error): ?>
+            <li><?php echo htmlspecialchars($error); ?></li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    <?php endif; ?>
+
+    <form method="post" class="guestbook__form">
+      <label>
+        Имя:
+        <input type="text" name="name" required value="<?php echo htmlspecialchars($name); ?>">
+      </label>
+      <label>
+        Сообщение:
+        <textarea name="message" rows="4" required><?php echo htmlspecialchars($message); ?></textarea>
+      </label>
+      <button type="submit">Оставить сообщение</button>
+    </form>
+  </section>
+</main>
 
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
 </body>

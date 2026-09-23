@@ -140,3 +140,75 @@ a {
   color: #000080;
   text-decoration: underline;
 }
+
+.guestbook {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #b8b8b8;
+  border: 3px double #800080;
+  font-family: "Times New Roman", serif;
+}
+
+.guestbook__title {
+  font-size: 32px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.guestbook__form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.guestbook__form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.guestbook__form input,
+.guestbook__form textarea {
+  padding: 8px;
+  border: 2px inset #808080;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.guestbook__form button {
+  padding: 10px 20px;
+  border: 2px outset #808080;
+  background-color: #c0c0c0;
+  font-family: "Times New Roman", serif;
+  font-size: 16px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.guestbook__form button:active {
+  border-style: inset;
+}
+
+.guestbook__errors {
+  background-color: #ffcccc;
+  border: 2px solid #cc0000;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #800000;
+}
+
+.guestbook__errors ul {
+  margin: 10px 0 0 20px;
+  list-style: disc;
+}
+
+.guestbook__ok {
+  background-color: #ccffcc;
+  border: 2px solid #008000;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #004000;
+}
