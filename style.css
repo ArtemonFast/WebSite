@@ -11,6 +11,7 @@
 
 body {
   background-color: lightgray;
+  cursor: url("/Assets/Cursor/arrow_eoa.cur"), auto;
 }
 
 .head {
@@ -274,4 +275,10 @@ a {
 
 .guestbook__delete button:active {
   border-style: inset;
+}
+
+a,
+button,
+input[type="submit"] {
+  cursor: url("/Assets/Cursor/link_eoa.cur"), pointer;
 }
