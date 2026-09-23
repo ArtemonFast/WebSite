@@ -63,3 +63,64 @@ body {
   margin: 15px 0;
   line-height: 1.5;    /* в 90-х такого не было, но читать приятнее */
 }
+
+.post-full {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #b8b8b8;
+  border: 3px double #800080;
+  font-family: "Times New Roman", serif;
+}
+
+.post-full__title {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.post-full__date {
+  color: #414040;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.post-full__body {
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+
+.post-full a {
+  color: #000080;
+  text-decoration: underline;
+}
+
+.topics {
+  max-width: 1000px;
+  margin: 0 auto 20px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  font-family: "Times New Roman", serif;
+}
+
+.topics__link {
+  padding: 5px 15px;
+  border: 2px outset #808080;
+  background-color: #c0c0c0;
+  color: #000080;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.topics__link:hover {
+  background-color: #d0d0d0;
+}
+
+.topics__link.active {
+  border-style: inset;
+  background-color: #800080;
+  color: #ffffff;
+}

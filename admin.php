@@ -45,6 +45,7 @@ if (isset($_GET['logout'])) {
       <?php if (!empty($_SESSION['admin'])): ?>
         <p class="guestbook__ok">Ты вошёл как админ.</p>
         <p><a href="/admin.php?logout=1">Выйти</a></p>
+        <p><a href="/admin-post.php">→ Написать пост</a></p>
         <p><a href="/guestbook.php">→ К гостевой</a></p>
       <?php else: ?>
         <?php if ($error): ?>
