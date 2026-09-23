@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['csrf'])) {
+    $_SESSION['csrf'] = bin2hex(random_bytes(32));
+}
+
+$isAdmin = !empty($_SESSION['admin']);
+
 $title = 'Guestbook';
 $description = 'Гостевая книга.';
 $styles = [];
@@ -8,7 +16,42 @@ $errors = [];
 $name = '';
 $message = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// ===== УДАЛЕНИЕ =====
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
+    if (!$isAdmin) {
+        http_response_code(403);
+        exit('Нет доступа.');
+    }
+
+    $csrf = $_POST['csrf'] ?? '';
+    if (!hash_equals($_SESSION['csrf'], $csrf)) {
+        http_response_code(403);
+        exit('CSRF-токен неверный.');
+    }
+
+    $idToDelete = $_POST['delete_id'];
+    $file = $_SERVER['DOCUMENT_ROOT'] . '/data/messages.txt';
+
+    if (is_file($file)) {
+        $lines = file($file, FILE_IGNORE_NEW_LINES);
+        $kept = [];
+        foreach ($lines as $line) {
+            if (trim($line) === '') {
+                continue;
+            }
+            if (sha1($line) !== $idToDelete) {
+                $kept[] = $line;
+            }
+        }
+        file_put_contents($file, implode("\n", $kept) . "\n", LOCK_EX);
+    }
+
+    header('Location: /guestbook.php');
+    exit;
+}
+
+// ===== ДОБАВЛЕНИЕ =====
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['delete_id'])) {
     $name = trim($_POST['name'] ?? '');
     $message = trim($_POST['message'] ?? '');
 
@@ -43,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// ===== ЧТЕНИЕ =====
 $file = $_SERVER['DOCUMENT_ROOT'] . '/data/messages.txt';
 $messages = [];
 if (is_file($file)) {
@@ -50,6 +94,7 @@ if (is_file($file)) {
     foreach ($lines as $line) {
         $entry = json_decode($line, true);
         if (is_array($entry)) {
+            $entry['_id'] = sha1($line);
             $messages[] = $entry;
         }
     }
@@ -67,6 +112,13 @@ if (is_file($file)) {
   <main>
     <section class="guestbook">
       <h1 class="guestbook__title">Guestbook</h1>
+
+      <?php if ($isAdmin): ?>
+        <p class="guestbook__ok">
+          Ты вошёл как админ. <a href="/admin.php?logout=1">Выйти</a>
+        </p>
+      <?php endif; ?>
+
       <hr>
 
       <?php if (isset($_GET['ok'])): ?>
@@ -108,6 +160,14 @@ if (is_file($file)) {
                 <time class="guestbook__msg-time"><?php echo htmlspecialchars($msg['time']); ?></time>
               </header>
               <p><?php echo nl2br(htmlspecialchars($msg['message'])); ?></p>
+
+              <?php if ($isAdmin): ?>
+                <form method="post" class="guestbook__delete">
+                  <input type="hidden" name="delete_id" value="<?php echo $msg['_id']; ?>">
+                  <input type="hidden" name="csrf" value="<?php echo htmlspecialchars($_SESSION['csrf']); ?>">
+                  <button type="submit">Удалить</button>
+                </form>
+              <?php endif; ?>
             </article>
           <?php endforeach; ?>
         </div>

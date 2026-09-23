@@ -256,3 +256,22 @@ a {
   font-style: italic;
   padding: 20px;
 }
+
+.guestbook__delete {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.guestbook__delete button {
+  padding: 4px 12px;
+  border: 2px outset #cc0000;
+  background-color: #ffcccc;
+  color: #800000;
+  font-family: "Times New Roman", serif;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.guestbook__delete button:active {
+  border-style: inset;
+}
