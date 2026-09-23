@@ -114,3 +114,29 @@ a {
   color: #000080;
   text-decoration: underline;
 }
+
+.page-stub {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #b8b8b8;
+  border: 3px double #800080;
+  font-family: "Times New Roman", serif;
+}
+
+.page-stub__title {
+  font-size: 32px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.page-stub__text {
+  margin: 15px 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.page-stub a {
+  color: #000080;
+  text-decoration: underline;
+}

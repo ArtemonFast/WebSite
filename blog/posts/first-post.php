@@ -4,6 +4,7 @@ $description = 'It\'s my blog. I write here my thoughts and my reaction on news.
 $styles = ['/blog/blog.css'];
 ?>
 <!DOCTYPE html>
+<?php $active = ' '; ?>
 <html lang="en">
 <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php'; ?>
 <body>
