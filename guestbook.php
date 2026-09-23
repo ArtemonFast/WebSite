@@ -40,9 +40,22 @@ $active = 'guestbook';
         }
 
         if (empty($errors)) {
-            // Всё ок — потом тут будем сохранять
-            echo '<p class="guestbook__ok">Форма прошла валидацию! Готово к сохранению.</p>';
-        }
+    $entry = [
+        'name'    => $name,
+        'message' => $message,
+        'time'    => date('Y-m-d H:i:s'),
+    ];
+
+    $line = json_encode($entry, JSON_UNESCAPED_UNICODE) . "\n";
+
+    file_put_contents(
+        $_SERVER['DOCUMENT_ROOT'] . '/data/messages.txt',
+        $line,
+        FILE_APPEND | LOCK_EX
+    );
+
+    echo '<p class="guestbook__ok">Сообщение сохранено!</p>';
+}
     }
     ?>
 
