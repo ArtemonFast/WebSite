@@ -155,6 +155,7 @@ $hasAnyDownload = !empty($downloads['windows']['url']) || !empty($downloads['lin
     <p class="meta">
       <a href="/games/index.php">← Все игры</a>
     </p>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
   </main>
 
 </body>

@@ -33,6 +33,7 @@ $active = '';
       &nbsp;·&nbsp;
       <a href="/games/index.php">Игры</a>
     </p>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
   </main>
 
 </body>

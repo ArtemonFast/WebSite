@@ -110,7 +110,8 @@ usort($items, function ($a, $b) {
     <?php endif; ?>
 
     <hr>
-  </main>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
+</main>
 
 </body>
 </html>

@@ -3,9 +3,15 @@ session_start();
 
 $title = 'About me';
 $description = 'Обо мне.';
-$styles = [];
+$styles = ['/about.css'];
 $active = 'about';
 $theme = 'orange';
+
+$validTabs = ['main', 'person', 'links'];
+$tab = $_GET['tab'] ?? 'main';
+if (!in_array($tab, $validTabs, true)) {
+    $tab = 'main';
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -23,40 +29,28 @@ $theme = 'orange';
 
     <hr>
 
-    <p>Привет! Меня зовут <strong>DAF</strong>.</p>
-
-    <p>Я делаю игры и пишу код. Этот сайт — мой личный уголок в интернете:
-       блог, список игр, гостевая книга. Всё вручную, без JS, на чистом PHP.</p>
-
-    <p>Мне нравится эстетика старых терминалов, пиксельные шрифты и минимализм.
-       Поэтому сайт выглядит так, а не иначе.</p>
-
-    <hr>
-
-    <h2>Контакты</h2>
-
-    <ul class="about-links">
-      <li>Email: <a href="mailto:you@example.com">you@example.com</a></li>
-      <li>GitHub: <a href="https://github.com/" target="_blank" rel="noopener">github.com/твой-ник</a></li>
-      <li>Steam: <a href="https://steamcommunity.com/" target="_blank" rel="noopener">steam/твой-ник</a></li>
-    </ul>
+    <nav class="tabs">
+      <a class="tabs__link <?php echo $tab === 'main' ? 'active' : ''; ?>"
+         href="/about.php">Обо мне</a>
+      <a class="tabs__link <?php echo $tab === 'person' ? 'active' : ''; ?>"
+         href="/about.php?tab=person">Личность</a>
+      <a class="tabs__link <?php echo $tab === 'links' ? 'active' : ''; ?>"
+         href="/about.php?tab=links">Ссылки</a>
+    </nav>
 
     <hr>
 
-    <h2>Технологии сайта</h2>
-
-    <ul class="about-links">
-      <li>HTML5 + CSS3 — вёрстка</li>
-      <li>PHP — серверная логика</li>
-      <li>JSON-файлы — хранение данных</li>
-      <li>Ни строчки JavaScript</li>
-    </ul>
+    <?php if ($tab === 'main'): ?>
+      <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/about/main.php'; ?>
+    <?php elseif ($tab === 'person'): ?>
+      <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/about/person.php'; ?>
+    <?php elseif ($tab === 'links'): ?>
+      <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/about/links.php'; ?>
+    <?php endif; ?>
 
     <hr>
 
-    <p class="meta">
-      <a href="/">← На главную</a>
-    </p>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
   </main>
 
 </body>

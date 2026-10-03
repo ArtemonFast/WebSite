@@ -8,8 +8,8 @@
         <link rel="stylesheet" href="<?php echo $style; ?>">
     <?php endforeach; ?>
     <link rel="shortcut icon" href="/Assets/images/icon.jpg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="alternate" type="application/rss+xml" title="DAF inc. — Blog" href="/rss.php">
 </head>

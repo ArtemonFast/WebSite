@@ -84,6 +84,7 @@ $description = $post['description'];
         <a href="/blog/index.php">← Все посты</a>
       </p>
     </article>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
   </main>
 
 </body>

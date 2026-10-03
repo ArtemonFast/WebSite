@@ -62,6 +62,7 @@ if (is_file($file)) {
     <p class="meta">
       <a href="/">← На главную</a>
     </p>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
   </main>
 
 </body>
