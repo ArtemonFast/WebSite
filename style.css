@@ -39,7 +39,7 @@ body {
   background-attachment: fixed;
   color: var(--text);
   font-family: 'VT323', 'Courier New', monospace;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1.5;
   overflow-x: hidden;
 }
