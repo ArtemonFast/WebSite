@@ -1,10 +1,13 @@
 <?php
 session_start();
 
+$isAdmin = !empty($_SESSION['admin']);
+
 $title = 'Пост';
 $description = '';
 $styles = ['/blog/blog.css'];
 $active = 'blog';
+$theme = 'green';
 
 $slug = $_GET['slug'] ?? '';
 
@@ -16,6 +19,7 @@ if ($slug === '') {
 
 $file = $_SERVER['DOCUMENT_ROOT'] . '/data/posts.txt';
 $post = null;
+$postLine = null;
 
 if (is_file($file)) {
     $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -23,6 +27,7 @@ if (is_file($file)) {
         $entry = json_decode($line, true);
         if (is_array($entry) && ($entry['slug'] ?? '') === $slug) {
             $post = $entry;
+            $postLine = $line;
             break;
         }
     }
@@ -42,24 +47,44 @@ $description = $post['description'];
 <head>
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php'; ?>
 </head>
-<body>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php'; ?>
+<body class="theme-<?php echo $theme; ?>">
 
-  <main>
+  <main class="container">
+    <p class="meta">
+      <a href="/blog/index.php">← Все посты</a>
+    </p>
+
+    <hr>
+
+    <?php if (isset($_GET['saved'])): ?>
+      <p class="flash">Пост сохранён.</p>
+    <?php endif; ?>
+
     <article class="post-full">
       <h1 class="post-full__title"><?php echo htmlspecialchars($post['title']); ?></h1>
-      <time class="post-full__date" datetime="<?php echo htmlspecialchars($post['date']); ?>">
-        <?php echo htmlspecialchars($post['date']); ?>
-      </time>
+
+      <p class="meta">
+        <time class="post-full__date" datetime="<?php echo htmlspecialchars($post['date']); ?>">
+          <?php echo htmlspecialchars($post['date']); ?>
+        </time>
+        <?php if ($isAdmin): ?>
+          &nbsp;·&nbsp;<a href="/admin-post-edit.php?id=<?php echo sha1($postLine); ?>">✎ Редактировать</a>
+        <?php endif; ?>
+      </p>
+
       <hr>
+
       <div class="post-full__body">
         <?php echo nl2br(htmlspecialchars($post['body'])); ?>
       </div>
+
       <hr>
-      <p><a href="/blog/index.php">← Назад к списку постов</a></p>
+
+      <p class="meta">
+        <a href="/blog/index.php">← Все посты</a>
+      </p>
     </article>
   </main>
 
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
 </body>
 </html>

@@ -7,6 +7,7 @@ $title = 'Admin';
 $description = 'Админка.';
 $styles = [];
 $active = '';
+$theme = 'green';
 
 $error = '';
 
@@ -22,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = 'Неверный пароль.';
 }
 
-// Выход
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: /admin.php');
@@ -34,37 +34,50 @@ if (isset($_GET['logout'])) {
 <head>
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php'; ?>
 </head>
-<body>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php'; ?>
+<body class="theme-<?php echo $theme; ?>">
 
-  <main>
-    <section class="guestbook">
-      <h1 class="guestbook__title">Admin</h1>
-      <hr>
+  <main class="container">
+    <h1>Admin</h1>
 
-      <?php if (!empty($_SESSION['admin'])): ?>
-        <p class="guestbook__ok">Ты вошёл как админ.</p>
-        <p><a href="/admin.php?logout=1">Выйти</a></p>
-        <p><a href="/admin-post.php">→ Написать пост</a></p>
-        <p><a href="/guestbook.php">→ К гостевой</a></p>
-      <?php else: ?>
-        <?php if ($error): ?>
-          <div class="guestbook__errors">
-            <?php echo htmlspecialchars($error); ?>
-          </div>
-        <?php endif; ?>
+    <p class="meta">
+      <a href="/">← На главную</a>
+    </p>
 
-        <form method="post" class="guestbook__form">
-          <label>
-            Пароль:
-            <input type="password" name="password" required autofocus>
-          </label>
-          <button type="submit">Войти</button>
-        </form>
+    <hr>
+
+    <?php if (!empty($_SESSION['admin'])): ?>
+      <p class="flash">Ты вошёл как админ.</p>
+
+      <ul class="admin-menu">
+        <li><a href="/admin-post.php">→ Написать пост</a></li>
+        <li><a href="/admin-game.php">→ Добавить игру</a></li>
+        <li><a href="/blog/index.php">→ Блог</a></li>
+        <li><a href="/games/index.php">→ Игры</a></li>
+        <li><a href="/guestbook.php">→ Гостевая</a></li>
+        <li><a href="/admin.php?logout=1">→ Выйти</a></li>
+      </ul>
+    <?php else: ?>
+      <?php if ($error): ?>
+        <div class="form-errors">
+          <?php echo htmlspecialchars($error); ?>
+        </div>
       <?php endif; ?>
-    </section>
+
+      <form method="post" class="form">
+        <label>
+          Пароль:
+          <input type="password" name="password" required autofocus>
+        </label>
+        <button type="submit">Войти</button>
+      </form>
+    <?php endif; ?>
+
+    <hr>
+
+    <p class="meta">
+      <a href="/">← На главную</a>
+    </p>
   </main>
 
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
 </body>
 </html>

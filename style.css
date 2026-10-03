@@ -53,11 +53,11 @@ body::before {
   width: 1200px;
   height: 1200px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, var(--accent) 0%, transparent 50%);
-  opacity: 0.08;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+  opacity: 0.18;
   pointer-events: none;
   z-index: 0;
-  filter: blur(40px);
+  filter: blur(30px);
 }
 
 /* Сканлайны + виньетка — «CRT-монитор» */
@@ -86,8 +86,12 @@ body::after {
   margin: 0 auto;
   padding: 60px 24px 80px;
   min-height: 100vh;
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
+  background-color: rgba(30, 30, 30, 0.75);
+  border: 1px solid var(--accent);
+  box-shadow:
+    0 0 10px var(--accent-glow),
+    0 0 60px rgba(0, 0, 0, 0.5),
+    inset 0 0 40px rgba(0, 0, 0, 0.3);
 }
 
 /* ===== ТИПОГРАФИКА ===== */
@@ -269,4 +273,217 @@ li {
 .game-download {
   font-size: 22px;
   margin: 16px 0;
+}
+
+/* ===== ФОРМЫ ===== */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 18px;
+}
+
+.form input,
+.form textarea,
+.form select {
+  padding: 8px;
+  background-color: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 20px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form input:focus,
+.form textarea:focus,
+.form select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.form textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.form button {
+  align-self: flex-start;
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.form button:hover {
+  background-color: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* ===== ОШИБКИ ФОРМЫ ===== */
+.form-errors {
+  padding: 12px 16px;
+  border-left: 3px solid #ff4444;
+  background-color: rgba(255, 68, 68, 0.08);
+  margin-bottom: 20px;
+}
+
+.form-errors strong {
+  color: #ff6666;
+}
+
+.form-errors ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+  list-style: square;
+}
+
+.form-errors li {
+  color: #ffaaaa;
+  margin: 4px 0;
+}
+
+.flash {
+  padding: 8px 14px;
+  border-left: 3px solid var(--accent);
+  background-color: rgba(0, 255, 136, 0.06);
+  margin: 12px 0;
+  color: var(--accent);
+}
+
+/* ===== ГОСТЕВАЯ: СООБЩЕНИЯ ===== */
+.messages {
+  margin: 20px 0;
+}
+
+.message {
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.message:last-child {
+  border-bottom: none;
+}
+
+.message__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.message__name {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: normal;
+}
+
+.message__time {
+  color: var(--muted);
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.message__body {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.message__delete {
+  margin-top: 8px;
+}
+
+.message__delete button {
+  padding: 3px 12px;
+  background-color: transparent;
+  border: 1px solid #ff4444;
+  color: #ff4444;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.message__delete button:hover {
+  background-color: #ff4444;
+  color: var(--bg);
+}
+
+/* ===== ДЕЙСТВИЯ НАД СООБЩЕНИЕМ ===== */
+.message__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.message__reply {
+  font-size: 16px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.message__reply:hover {
+  color: var(--accent);
+}
+
+.message__delete {
+  margin: 0;
+}
+
+/* ===== ОТВЕТЫ (вложенные) ===== */
+.message__replies {
+  margin-top: 12px;
+  margin-left: 24px;
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+
+.message--reply {
+  padding: 8px 0;
+  border-bottom: none;
+}
+
+.message--reply .message__name {
+  font-size: 18px;
+}
+
+.message--reply .message__body {
+  font-size: 18px;
+}
+
+/* ===== МЕНЮ АДМИНКИ ===== */
+.admin-menu {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.admin-menu li {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.admin-menu li:last-child {
+  border-bottom: none;
+}
+
+.admin-menu a {
+  font-size: 20px;
 }

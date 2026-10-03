@@ -1,26 +1,39 @@
 <?php
-$title = '404 — Страница не найдена';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$title = '404 — Не найдено';
 $description = 'Такой страницы нет.';
 $styles = [];
+$theme = 'green';
+$active = '';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php'; ?>
 </head>
-<body>
-  <?php $active = ''; ?>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php'; ?>
+<body class="theme-<?php echo $theme; ?>">
 
-  <main>
-    <section class="not-found">
-      <h1 class="not-found__code">404</h1>
-      <p class="not-found__text">Такой страницы нет. Возможно, она переехала или её никогда не было.</p>
-      <p class="not-found__text">Если вы здесь из-за проблемы с сылками, то напишите issues.</p>
-      <p><a href="/index.php">← На главную</a></p>
-    </section>
+  <main class="container">
+    <h1>404</h1>
+
+    <hr>
+
+    <p>Такой страницы нет.</p>
+    <p>Возможно, она переехала, либо её никогда не было.</p>
+
+    <hr>
+
+    <p class="meta">
+      <a href="/">← На главную</a>
+      &nbsp;·&nbsp;
+      <a href="/blog/index.php">Блог</a>
+      &nbsp;·&nbsp;
+      <a href="/games/index.php">Игры</a>
+    </p>
   </main>
 
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
 </body>
 </html>
