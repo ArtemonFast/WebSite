@@ -3,6 +3,8 @@ session_start();
 
 require $_SERVER['DOCUMENT_ROOT'] . '/includes/statuses.php';
 
+$isAdmin = !empty($_SESSION['admin']);
+
 $title = 'Игра';
 $description = '';
 $styles = [];
@@ -19,6 +21,7 @@ if ($slug === '') {
 
 $file = $_SERVER['DOCUMENT_ROOT'] . '/data/games.txt';
 $game = null;
+$gameLine = null;
 
 if (is_file($file)) {
     $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -26,6 +29,7 @@ if (is_file($file)) {
         $entry = json_decode($line, true);
         if (is_array($entry) && ($entry['slug'] ?? '') === $slug) {
             $game = $entry;
+            $gameLine = $line;
             break;
         }
     }
@@ -55,6 +59,10 @@ $statusName = $STATUSES[$game['status']] ?? $game['status'];
 
     <hr>
 
+    <?php if (isset($_GET['saved'])): ?>
+      <p class="flash">Игра сохранена.</p>
+    <?php endif; ?>
+
     <h1><?php echo htmlspecialchars($game['title']); ?></h1>
 
     <p class="game-meta">
@@ -62,6 +70,10 @@ $statusName = $STATUSES[$game['status']] ?? $game['status'];
         [<?php echo htmlspecialchars($statusName); ?>]
       </span>
       <span class="games__date"><?php echo htmlspecialchars($game['date']); ?></span>
+      <?php if ($isAdmin && $gameLine !== null): ?>
+        &nbsp;·&nbsp;
+        <a href="/admin-game-edit.php?id=<?php echo sha1($gameLine); ?>">✎ Редактировать</a>
+      <?php endif; ?>
     </p>
 
     <hr>

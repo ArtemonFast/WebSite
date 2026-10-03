@@ -487,3 +487,73 @@ li {
 .admin-menu a {
   font-size: 20px;
 }
+/* ===== ABOUT ME ===== */
+.about-links {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.about-links li {
+  padding: 4px 0;
+  font-size: 19px;
+}
+
+/* ===== РЕЕСТР ===== */
+.registry {
+  margin: 20px 0;
+  font-size: 18px;
+}
+
+.registry__item {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  padding: 5px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.registry__item:last-child {
+  border-bottom: none;
+}
+
+.registry__date {
+  color: var(--muted);
+  font-size: 16px;
+  flex-shrink: 0;
+  min-width: 95px;
+}
+
+.registry__bullet {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.registry__type {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+
+.registry__dash {
+  color: var(--muted);
+}
+
+.registry__title {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.registry__title:hover {
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.registry__status {
+  color: var(--muted);
+  font-size: 16px;
+  margin-left: auto;
+  flex-shrink: 0;
+}

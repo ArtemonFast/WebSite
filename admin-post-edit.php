@@ -22,10 +22,8 @@ $theme = 'green';
 $file = $_SERVER['DOCUMENT_ROOT'] . '/data/posts.txt';
 $errors = [];
 
-// Отпечаток исходной строки
 $editId = $_POST['edit_id'] ?? $_GET['id'] ?? '';
 
-// Ищем исходный пост по отпечатку
 $originalLine = null;
 $original = null;
 $lineIndex = null;
@@ -69,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $form['description'] = trim($_POST['description'] ?? '');
     $form['body']        = trim($_POST['body'] ?? '');
 
-    // Валидация
     if ($form['slug'] === '') {
         $errors[] = 'Slug не может быть пустым.';
     } elseif (!preg_match('/^[a-z0-9-]+$/', $form['slug'])) {
@@ -98,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         $errors[] = 'Тело поста слишком длинное (максимум 20000).';
     }
 
-    // Проверка slug — если он изменился, не должен совпасть с другими
     if (empty($errors) && $form['slug'] !== ($original['slug'] ?? '')) {
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
@@ -111,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     }
 
     if (empty($errors)) {
-        // Автозаполнение description
         if ($form['description'] === '') {
             $form['description'] = mb_substr($form['body'], 0, 150);
             if (mb_strlen($form['body']) > 150) {
@@ -122,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         $newEntry = [
             'slug'        => $form['slug'],
             'title'       => $form['title'],
-            'date'        => $original['date'], // дата не меняется
+            'date'        => $original['date'],
             'topic'       => $form['topic'],
             'description' => $form['description'],
             'body'        => $form['body'],
@@ -130,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
 
         $newLine = json_encode($newEntry, JSON_UNESCAPED_UNICODE);
 
-        // Читаем все строки, заменяем нужную
         $allLines = file($file, FILE_IGNORE_NEW_LINES);
         $allLines[$lineIndex] = $newLine;
 
@@ -209,8 +203,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     </form>
 
     <hr>
+
     <p class="meta">
       <a href="/blog/post.php?slug=<?php echo urlencode($original['slug']); ?>">← К посту</a>
+      &nbsp;·&nbsp;
+      <a href="/admin.php">В админку</a>
     </p>
   </main>
 

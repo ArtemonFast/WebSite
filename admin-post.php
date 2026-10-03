@@ -17,6 +17,7 @@ $title = 'Новый пост';
 $description = 'Публикация поста.';
 $styles = [];
 $active = '';
+$theme = 'green';
 
 $errors = [];
 $form = [
@@ -40,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form['description'] = trim($_POST['description'] ?? '');
     $form['body']        = trim($_POST['body'] ?? '');
 
-    // Slug
     if ($form['slug'] === '') {
         $errors[] = 'Slug не может быть пустым.';
     } elseif (!preg_match('/^[a-z0-9-]+$/', $form['slug'])) {
@@ -49,31 +49,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Slug слишком длинный (максимум 100).';
     }
 
-    // Title
     if ($form['title'] === '') {
         $errors[] = 'Заголовок не может быть пустым.';
     } elseif (mb_strlen($form['title']) > 200) {
         $errors[] = 'Заголовок слишком длинный (максимум 200).';
     }
 
-    // Topic
     if (!isset($TOPICS[$form['topic']])) {
         $errors[] = 'Неизвестная тема.';
     }
 
-    // Description
     if (mb_strlen($form['description']) > 500) {
         $errors[] = 'Описание слишком длинное (максимум 500).';
     }
 
-    // Body
     if ($form['body'] === '') {
         $errors[] = 'Тело поста не может быть пустым.';
     } elseif (mb_strlen($form['body']) > 20000) {
         $errors[] = 'Тело поста слишком длинное (максимум 20000).';
     }
 
-    // Проверка уникальности slug
     if (empty($errors)) {
         $file = $_SERVER['DOCUMENT_ROOT'] . '/data/posts.txt';
         if (is_file($file)) {
@@ -89,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // Описание по умолчанию — первые 150 символов body
         if ($form['description'] === '') {
             $form['description'] = mb_substr($form['body'], 0, 150);
             if (mb_strlen($form['body']) > 150) {
@@ -122,68 +116,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/head.php'; ?>
 </head>
-<body>
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/header.php'; ?>
+<body class="theme-<?php echo $theme; ?>">
 
-  <main>
-    <section class="guestbook">
-      <h1 class="guestbook__title">Новый пост</h1>
-      <hr>
+  <main class="container">
+    <h1>Новый пост</h1>
 
-      <?php if (!empty($errors)): ?>
-        <div class="guestbook__errors">
-          <strong>Ошибки:</strong>
-          <ul>
-            <?php foreach ($errors as $error): ?>
-              <li><?php echo htmlspecialchars($error); ?></li>
-            <?php endforeach; ?>
-          </ul>
-        </div>
-      <?php endif; ?>
+    <p class="meta">
+      <a href="/admin.php">← В админку</a>
+    </p>
 
-      <form method="post" class="guestbook__form">
-        <input type="hidden" name="csrf" value="<?php echo htmlspecialchars($_SESSION['csrf']); ?>">
+    <hr>
 
-        <label>
-          Slug (латиница, цифры, дефисы):
-          <input type="text" name="slug" required value="<?php echo htmlspecialchars($form['slug']); ?>">
-        </label>
+    <?php if (!empty($errors)): ?>
+      <div class="form-errors">
+        <strong>Ошибки:</strong>
+        <ul>
+          <?php foreach ($errors as $error): ?>
+            <li><?php echo htmlspecialchars($error); ?></li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    <?php endif; ?>
 
-        <label>
-          Заголовок:
-          <input type="text" name="title" required value="<?php echo htmlspecialchars($form['title']); ?>">
-        </label>
+    <form method="post" class="form">
+      <input type="hidden" name="csrf" value="<?php echo htmlspecialchars($_SESSION['csrf']); ?>">
 
-        <label>
-          Тема:
-          <select name="topic">
-            <?php foreach ($TOPICS as $key => $name): ?>
-              <option value="<?php echo htmlspecialchars($key); ?>"
-                <?php echo $form['topic'] === $key ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($name); ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </label>
+      <label>
+        Slug (латиница, цифры, дефисы):
+        <input type="text" name="slug" required value="<?php echo htmlspecialchars($form['slug']); ?>">
+      </label>
 
-        <label>
-          Описание (если пусто — возьмём из тела):
-          <textarea name="description" rows="2"><?php echo htmlspecialchars($form['description']); ?></textarea>
-        </label>
+      <label>
+        Заголовок:
+        <input type="text" name="title" required value="<?php echo htmlspecialchars($form['title']); ?>">
+      </label>
 
-        <label>
-          Тело поста:
-          <textarea name="body" rows="15" required><?php echo htmlspecialchars($form['body']); ?></textarea>
-        </label>
+      <label>
+        Тема:
+        <select name="topic">
+          <?php foreach ($TOPICS as $key => $name): ?>
+            <option value="<?php echo htmlspecialchars($key); ?>"
+              <?php echo $form['topic'] === $key ? 'selected' : ''; ?>>
+              <?php echo htmlspecialchars($name); ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </label>
 
-        <button type="submit">Опубликовать</button>
-      </form>
+      <label>
+        Описание (если пусто — возьмём из тела):
+        <textarea name="description" rows="2"><?php echo htmlspecialchars($form['description']); ?></textarea>
+      </label>
 
-      <hr>
-      <p><a href="/admin.php">← В админку</a></p>
-    </section>
+      <label>
+        Тело поста:
+        <textarea name="body" rows="15" required><?php echo htmlspecialchars($form['body']); ?></textarea>
+      </label>
+
+      <button type="submit">Опубликовать</button>
+    </form>
+
+    <hr>
+
+    <p class="meta">
+      <a href="/admin.php">← В админку</a>
+    </p>
   </main>
 
-  <?php include $_SERVER['DOCUMENT_ROOT'] . '/includes/footer.php'; ?>
 </body>
 </html>

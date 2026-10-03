@@ -45,7 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form['screenshots'] = trim($_POST['screenshots'] ?? '');
     $form['link']        = trim($_POST['link'] ?? '');
 
-    // Slug
     if ($form['slug'] === '') {
         $errors[] = 'Slug не может быть пустым.';
     } elseif (!preg_match('/^[a-z0-9-]+$/', $form['slug'])) {
@@ -54,36 +53,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Slug слишком длинный (максимум 100).';
     }
 
-    // Title
     if ($form['title'] === '') {
         $errors[] = 'Название не может быть пустым.';
     } elseif (mb_strlen($form['title']) > 200) {
         $errors[] = 'Название слишком длинное (максимум 200).';
     }
 
-    // Status
     if (!isset($STATUSES[$form['status']])) {
         $errors[] = 'Неизвестный статус.';
     }
 
-    // Short
     if (mb_strlen($form['short']) > 300) {
         $errors[] = 'Короткое описание слишком длинное (максимум 300).';
     }
 
-    // Description
     if ($form['description'] === '') {
         $errors[] = 'Описание не может быть пустым.';
     } elseif (mb_strlen($form['description']) > 20000) {
         $errors[] = 'Описание слишком длинное (максимум 20000).';
     }
 
-    // Link
     if ($form['link'] !== '' && !filter_var($form['link'], FILTER_VALIDATE_URL)) {
         $errors[] = 'Ссылка не похожа на URL.';
     }
 
-    // Проверка уникальности slug
     if (empty($errors)) {
         $file = $_SERVER['DOCUMENT_ROOT'] . '/data/games.txt';
         if (is_file($file)) {
@@ -99,7 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // Скриншоты — разбить по строкам, убрать пустые
         $screenshots = [];
         if ($form['screenshots'] !== '') {
             foreach (explode("\n", $form['screenshots']) as $line) {
@@ -110,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Short по умолчанию — первые 150 символов описания
         if ($form['short'] === '') {
             $form['short'] = mb_substr($form['description'], 0, 150);
             if (mb_strlen($form['description']) > 150) {
@@ -193,7 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </label>
 
       <label>
-        Короткое описание (для списка; если пусто — возьмём из описания):
+        Короткое описание (если пусто — возьмём из описания):
         <textarea name="short" rows="2"><?php echo htmlspecialchars($form['short']); ?></textarea>
       </label>
 
@@ -214,6 +205,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <button type="submit">Опубликовать</button>
     </form>
+
+    <hr>
+
+    <p class="meta">
+      <a href="/admin.php">← В админку</a>
+    </p>
   </main>
 
 </body>

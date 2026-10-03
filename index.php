@@ -1,43 +1,55 @@
 <?php
 session_start();
 
+require $_SERVER['DOCUMENT_ROOT'] . '/includes/statuses.php';
+
 $title = 'Home';
 $description = 'Личный сайт разработчика. Пишу про игры, мысли, код.';
 $styles = [];
 $active = 'home';
-$theme = 'green'; // 'green' | 'orange' | 'purple'
+$theme = 'green';
 
-// Последние посты
+$items = [];
+
+// Посты
 $postsFile = $_SERVER['DOCUMENT_ROOT'] . '/data/posts.txt';
-$recentPosts = [];
 if (is_file($postsFile)) {
     $lines = file($postsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $all = [];
     foreach ($lines as $line) {
         $entry = json_decode($line, true);
         if (is_array($entry)) {
-            $all[] = $entry;
+            $items[] = [
+                'type'  => 'blog',
+                'date'  => $entry['date'] ?? '',
+                'title' => $entry['title'] ?? '',
+                'slug'  => $entry['slug'] ?? '',
+            ];
         }
     }
-    $all = array_reverse($all);
-    $recentPosts = array_slice($all, 0, 3);
 }
 
-// Последние игры
+// Игры
 $gamesFile = $_SERVER['DOCUMENT_ROOT'] . '/data/games.txt';
-$recentGames = [];
 if (is_file($gamesFile)) {
     $lines = file($gamesFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $all = [];
     foreach ($lines as $line) {
         $entry = json_decode($line, true);
         if (is_array($entry)) {
-            $all[] = $entry;
+            $items[] = [
+                'type'   => 'game',
+                'date'   => $entry['date'] ?? '',
+                'title'  => $entry['title'] ?? '',
+                'slug'   => $entry['slug'] ?? '',
+                'status' => $entry['status'] ?? '',
+            ];
         }
     }
-    $all = array_reverse($all);
-    $recentGames = array_slice($all, 0, 3);
 }
+
+// Свежие сверху
+usort($items, function ($a, $b) {
+    return strcmp($b['date'], $a['date']);
+});
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -65,37 +77,39 @@ if (is_file($gamesFile)) {
 
     <hr>
 
-    <?php if (!empty($recentPosts)): ?>
-      <h2>Последнее из блога</h2>
-      <div class="recent">
-        <?php foreach ($recentPosts as $p): ?>
-          <div class="recent__item">
-            <a href="/blog/post.php?slug=<?php echo urlencode($p['slug']); ?>">
-              <?php echo htmlspecialchars($p['title']); ?>
+    <h2>Registry</h2>
+
+    <?php if (!empty($items)): ?>
+      <div class="registry">
+        <?php foreach ($items as $item): ?>
+          <?php
+            $link = $item['type'] === 'blog'
+              ? '/blog/post.php?slug=' . urlencode($item['slug'])
+              : '/games/game.php?slug=' . urlencode($item['slug']);
+          ?>
+          <div class="registry__item">
+            <time class="registry__date"><?php echo htmlspecialchars($item['date']); ?></time>
+            <span class="registry__bullet">●</span>
+            <span class="registry__type registry__type--<?php echo htmlspecialchars($item['type']); ?>">
+              [<?php echo htmlspecialchars($item['type']); ?>]
+            </span>
+            <span class="registry__dash">-</span>
+            <a class="registry__title" href="<?php echo $link; ?>">
+              <?php echo htmlspecialchars($item['title']); ?>
             </a>
-            <span class="recent__date"><?php echo htmlspecialchars($p['date']); ?></span>
+            <?php if ($item['type'] === 'game' && !empty($item['status'])): ?>
+              <span class="registry__status">
+                [<?php echo htmlspecialchars($STATUSES[$item['status']] ?? $item['status']); ?>]
+              </span>
+            <?php endif; ?>
           </div>
         <?php endforeach; ?>
       </div>
+    <?php else: ?>
+      <p class="meta">Пока пусто.</p>
     <?php endif; ?>
 
-    <?php if (!empty($recentGames)): ?>
-      <h2>Последние игры</h2>
-      <div class="recent">
-        <?php foreach ($recentGames as $g): ?>
-          <div class="recent__item">
-            <a href="/games/game.php?slug=<?php echo urlencode($g['slug']); ?>">
-              <?php echo htmlspecialchars($g['title']); ?>
-            </a>
-            <span class="recent__date"><?php echo htmlspecialchars($g['status'] ?? ''); ?></span>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    <?php endif; ?>
-
-    <?php if (empty($recentPosts) && empty($recentGames)): ?>
-      <p class="meta">Пока пусто. Скоро будет контент.</p>
-    <?php endif; ?>
+    <hr>
   </main>
 
 </body>
