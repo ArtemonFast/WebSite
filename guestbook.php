@@ -18,6 +18,7 @@ $file = $_SERVER['DOCUMENT_ROOT'] . '/data/messages.txt';
 $errors = [];
 $name = '';
 $message = '';
+$honeypot = '';
 
 // ===== УДАЛЕНИЕ =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
@@ -62,6 +63,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['delete_id'])) {
     $name = trim($_POST['name'] ?? '');
     $message = trim($_POST['message'] ?? '');
     $parentId = $_POST['parent_id'] ?? '';
+    
+    $honeypot = trim($_POST['website'] ?? '');
+
+    // Honeypot: если поле заполнено — это бот
+    if ($honeypot !== '') {
+      // Тихо притворяемся, что всё ок — бот не поймёт, что его раскусили
+      header('Location: /guestbook.php?ok=1');
+      exit;
+    }
 
     if ($name === '') {
         $errors[] = 'Имя не может быть пустым.';
@@ -194,6 +204,13 @@ if ($replyTo !== '') {
     <form method="post" class="form">
       <input type="hidden" name="csrf" value="<?php echo htmlspecialchars($_SESSION['csrf']); ?>">
       <input type="hidden" name="parent_id" value="<?php echo htmlspecialchars($replyTo); ?>">
+
+      <div class="honeypot" aria-hidden="true">
+        <label>
+          Website:
+          <input type="text" name="website" value="" tabindex="-1" autocomplete="off">
+        </label>
+      </div>
 
       <label>
         Имя:
