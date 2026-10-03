@@ -44,10 +44,36 @@ if ($original === null) {
     exit;
 }
 
-// Скриншоты из массива — в текст построчно
+// ===== Предзаполнение =====
+
+// Скриншоты
 $screenshotsText = '';
 if (!empty($original['screenshots']) && is_array($original['screenshots'])) {
     $screenshotsText = implode("\n", $original['screenshots']);
+}
+
+// Mirrors
+$mirrorsText = '';
+if (!empty($original['mirrors']) && is_array($original['mirrors'])) {
+    $lines = [];
+    foreach ($original['mirrors'] as $m) {
+        $lines[] = ($m['name'] ?? '') . ' | ' . ($m['url'] ?? '');
+    }
+    $mirrorsText = implode("\n", $lines);
+}
+
+// Versions
+$versionsText = '';
+if (!empty($original['versions']) && is_array($original['versions'])) {
+    $lines = [];
+    foreach ($original['versions'] as $v) {
+        $dl = $v['downloads'] ?? [];
+        $lines[] = ($v['version'] ?? '') . ' | '
+                 . ($v['date'] ?? '') . ' | '
+                 . ($dl['windows'] ?? '') . ' | '
+                 . ($dl['linux'] ?? '');
+    }
+    $versionsText = implode("\n", $lines);
 }
 
 $form = [
@@ -57,7 +83,12 @@ $form = [
     'short'       => $original['short'] ?? '',
     'description' => $original['description'] ?? '',
     'screenshots' => $screenshotsText,
-    'link'        => $original['link'] ?? '',
+    'win_url'     => $original['downloads']['windows']['url'] ?? '',
+    'win_size'    => $original['downloads']['windows']['size'] ?? '',
+    'lin_url'     => $original['downloads']['linux']['url'] ?? '',
+    'lin_size'    => $original['downloads']['linux']['size'] ?? '',
+    'mirrors'     => $mirrorsText,
+    'versions'    => $versionsText,
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
@@ -67,14 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         exit('CSRF-токен неверный.');
     }
 
-    $form['slug']        = trim($_POST['slug'] ?? '');
-    $form['title']       = trim($_POST['title'] ?? '');
-    $form['status']      = trim($_POST['status'] ?? '');
-    $form['short']       = trim($_POST['short'] ?? '');
-    $form['description'] = trim($_POST['description'] ?? '');
-    $form['screenshots'] = trim($_POST['screenshots'] ?? '');
-    $form['link']        = trim($_POST['link'] ?? '');
+    foreach ($form as $key => $_) {
+        $form[$key] = trim($_POST[$key] ?? '');
+    }
 
+    // ===== Валидация =====
     if ($form['slug'] === '') {
         $errors[] = 'Slug не может быть пустым.';
     } elseif (!preg_match('/^[a-z0-9-]+$/', $form['slug'])) {
@@ -103,10 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         $errors[] = 'Описание слишком длинное (максимум 20000).';
     }
 
-    if ($form['link'] !== '' && !filter_var($form['link'], FILTER_VALIDATE_URL)) {
-        $errors[] = 'Ссылка не похожа на URL.';
-    }
-
+    // Slug-уникальность (если изменился)
     if (empty($errors) && $form['slug'] !== ($original['slug'] ?? '')) {
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
@@ -118,18 +143,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         }
     }
 
+    // ===== Парсинг =====
     if (empty($errors)) {
-        // Скриншоты — построчно в массив
+        // Скриншоты
         $screenshots = [];
         if ($form['screenshots'] !== '') {
             foreach (explode("\n", $form['screenshots']) as $line) {
                 $line = trim($line);
-                if ($line !== '') {
-                    $screenshots[] = $line;
-                }
+                if ($line !== '') $screenshots[] = $line;
             }
         }
 
+        // Mirrors
+        $mirrors = [];
+        if ($form['mirrors'] !== '') {
+            foreach (explode("\n", $form['mirrors']) as $i => $line) {
+                $line = trim($line);
+                if ($line === '') continue;
+                $parts = array_map('trim', explode('|', $line));
+                if (count($parts) < 2 || $parts[0] === '' || $parts[1] === '') {
+                    $errors[] = 'Миррор в строке ' . ($i + 1) . ': нужно "название | url".';
+                    continue;
+                }
+                $mirrors[] = ['name' => $parts[0], 'url' => $parts[1]];
+            }
+        }
+
+        // Versions
+        $versions = [];
+        if ($form['versions'] !== '') {
+            foreach (explode("\n", $form['versions']) as $i => $line) {
+                $line = trim($line);
+                if ($line === '') continue;
+                $parts = array_map('trim', explode('|', $line));
+                if (count($parts) < 4) {
+                    $errors[] = 'Версия в строке ' . ($i + 1) . ': нужно "version | date | win_url | lin_url".';
+                    continue;
+                }
+                $versions[] = [
+                    'version'   => $parts[0],
+                    'date'      => $parts[1],
+                    'downloads' => [
+                        'windows' => $parts[2],
+                        'linux'   => $parts[3],
+                    ],
+                ];
+            }
+        }
+    }
+
+    if (empty($errors)) {
         if ($form['short'] === '') {
             $form['short'] = mb_substr($form['description'], 0, 150);
             if (mb_strlen($form['description']) > 150) {
@@ -145,7 +208,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
             'short'       => $form['short'],
             'description' => $form['description'],
             'screenshots' => $screenshots,
-            'link'        => $form['link'],
+            'downloads'   => [
+                'windows' => ['url' => $form['win_url'], 'size' => $form['win_size']],
+                'linux'   => ['url' => $form['lin_url'], 'size' => $form['lin_size']],
+            ],
+            'mirrors'     => $mirrors,
+            'versions'    => $versions,
         ];
 
         $newLine = json_encode($newEntry, JSON_UNESCAPED_UNICODE);
@@ -229,10 +297,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
         <textarea name="screenshots" rows="4"><?php echo htmlspecialchars($form['screenshots']); ?></textarea>
       </label>
 
+      <hr>
+
+      <h2>Скачать сейчас</h2>
+
       <label>
-        Ссылка на скачивание:
-        <input type="url" name="link" value="<?php echo htmlspecialchars($form['link']); ?>">
+        Windows URL:
+        <input type="text" name="win_url" value="<?php echo htmlspecialchars($form['win_url']); ?>">
       </label>
+
+      <label>
+        Windows размер:
+        <input type="text" name="win_size" placeholder="45 MB" value="<?php echo htmlspecialchars($form['win_size']); ?>">
+      </label>
+
+      <label>
+        Linux URL:
+        <input type="text" name="lin_url" value="<?php echo htmlspecialchars($form['lin_url']); ?>">
+      </label>
+
+      <label>
+        Linux размер:
+        <input type="text" name="lin_size" placeholder="42 MB" value="<?php echo htmlspecialchars($form['lin_size']); ?>">
+      </label>
+
+      <hr>
+
+      <h2>Зеркала</h2>
+      <p class="meta">Формат: <code>название | url</code>, по одному на строку.</p>
+
+      <label>
+        Зеркала:
+        <textarea name="mirrors" rows="4"><?php echo htmlspecialchars($form['mirrors']); ?></textarea>
+      </label>
+
+      <hr>
+
+      <h2>Предыдущие версии</h2>
+      <p class="meta">Формат: <code>версия | дата | windows_url | linux_url</code>.</p>
+
+      <label>
+        Версии:
+        <textarea name="versions" rows="4"><?php echo htmlspecialchars($form['versions']); ?></textarea>
+      </label>
+
+      <hr>
 
       <button type="submit">Сохранить</button>
     </form>

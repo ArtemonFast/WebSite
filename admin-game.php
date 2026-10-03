@@ -27,7 +27,12 @@ $form = [
     'short'       => '',
     'description' => '',
     'screenshots' => '',
-    'link'        => '',
+    'win_url'     => '',
+    'win_size'    => '',
+    'lin_url'     => '',
+    'lin_size'    => '',
+    'mirrors'     => '',
+    'versions'    => '',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -37,14 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit('CSRF-токен неверный.');
     }
 
-    $form['slug']        = trim($_POST['slug'] ?? '');
-    $form['title']       = trim($_POST['title'] ?? '');
-    $form['status']      = trim($_POST['status'] ?? '');
-    $form['short']       = trim($_POST['short'] ?? '');
-    $form['description'] = trim($_POST['description'] ?? '');
-    $form['screenshots'] = trim($_POST['screenshots'] ?? '');
-    $form['link']        = trim($_POST['link'] ?? '');
+    foreach ($form as $key => $_) {
+        $form[$key] = trim($_POST[$key] ?? '');
+    }
 
+    // ===== Валидация =====
     if ($form['slug'] === '') {
         $errors[] = 'Slug не может быть пустым.';
     } elseif (!preg_match('/^[a-z0-9-]+$/', $form['slug'])) {
@@ -73,10 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Описание слишком длинное (максимум 20000).';
     }
 
-    if ($form['link'] !== '' && !filter_var($form['link'], FILTER_VALIDATE_URL)) {
-        $errors[] = 'Ссылка не похожа на URL.';
-    }
-
+    // Уникальность slug
     if (empty($errors)) {
         $file = $_SERVER['DOCUMENT_ROOT'] . '/data/games.txt';
         if (is_file($file)) {
@@ -91,17 +90,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // ===== Парсинг и сохранение =====
     if (empty($errors)) {
+        // Скриншоты
         $screenshots = [];
         if ($form['screenshots'] !== '') {
             foreach (explode("\n", $form['screenshots']) as $line) {
                 $line = trim($line);
-                if ($line !== '') {
-                    $screenshots[] = $line;
-                }
+                if ($line !== '') $screenshots[] = $line;
             }
         }
 
+        // Mirrors: "name | url"
+        $mirrors = [];
+        if ($form['mirrors'] !== '') {
+            foreach (explode("\n", $form['mirrors']) as $i => $line) {
+                $line = trim($line);
+                if ($line === '') continue;
+                $parts = array_map('trim', explode('|', $line));
+                if (count($parts) < 2 || $parts[0] === '' || $parts[1] === '') {
+                    $errors[] = 'Миррор в строке ' . ($i + 1) . ': нужно "название | url".';
+                    continue;
+                }
+                $mirrors[] = ['name' => $parts[0], 'url' => $parts[1]];
+            }
+        }
+
+        // Versions: "version | date | win_url | lin_url"
+        $versions = [];
+        if ($form['versions'] !== '') {
+            foreach (explode("\n", $form['versions']) as $i => $line) {
+                $line = trim($line);
+                if ($line === '') continue;
+                $parts = array_map('trim', explode('|', $line));
+                if (count($parts) < 4) {
+                    $errors[] = 'Версия в строке ' . ($i + 1) . ': нужно "version | date | win_url | lin_url".';
+                    continue;
+                }
+                $versions[] = [
+                    'version'   => $parts[0],
+                    'date'      => $parts[1],
+                    'downloads' => [
+                        'windows' => $parts[2],
+                        'linux'   => $parts[3],
+                    ],
+                ];
+            }
+        }
+    }
+
+    if (empty($errors)) {
+        // Short по умолчанию
         if ($form['short'] === '') {
             $form['short'] = mb_substr($form['description'], 0, 150);
             if (mb_strlen($form['description']) > 150) {
@@ -117,7 +156,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'short'       => $form['short'],
             'description' => $form['description'],
             'screenshots' => $screenshots,
-            'link'        => $form['link'],
+            'downloads'   => [
+                'windows' => ['url' => $form['win_url'], 'size' => $form['win_size']],
+                'linux'   => ['url' => $form['lin_url'], 'size' => $form['lin_size']],
+            ],
+            'mirrors'     => $mirrors,
+            'versions'    => $versions,
         ];
 
         file_put_contents(
@@ -198,10 +242,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <textarea name="screenshots" rows="4" placeholder="/Assets/games/my-game/screen1.png&#10;/Assets/games/my-game/screen2.png"><?php echo htmlspecialchars($form['screenshots']); ?></textarea>
       </label>
 
+      <hr>
+
+      <h2>Скачать сейчас</h2>
+
       <label>
-        Ссылка на скачивание (можно пусто):
-        <input type="url" name="link" value="<?php echo htmlspecialchars($form['link']); ?>">
+        Windows URL (можно пусто):
+        <input type="text" name="win_url" value="<?php echo htmlspecialchars($form['win_url']); ?>">
       </label>
+
+      <label>
+        Windows размер:
+        <input type="text" name="win_size" placeholder="45 MB" value="<?php echo htmlspecialchars($form['win_size']); ?>">
+      </label>
+
+      <label>
+        Linux URL (можно пусто):
+        <input type="text" name="lin_url" value="<?php echo htmlspecialchars($form['lin_url']); ?>">
+      </label>
+
+      <label>
+        Linux размер:
+        <input type="text" name="lin_size" placeholder="42 MB" value="<?php echo htmlspecialchars($form['lin_size']); ?>">
+      </label>
+
+      <hr>
+
+      <h2>Зеркала</h2>
+      <p class="meta">Формат: <code>название | url</code>, по одному на строку. Можно пусто.</p>
+
+      <label>
+        Зеркала:
+        <textarea name="mirrors" rows="4" placeholder="itch.io | https://example.itch.io/game&#10;GitHub | https://github.com/user/repo"><?php echo htmlspecialchars($form['mirrors']); ?></textarea>
+      </label>
+
+      <hr>
+
+      <h2>Предыдущие версии</h2>
+      <p class="meta">Формат: <code>версия | дата | windows_url | linux_url</code>, по одному на строку. Пустые URL допустимы.</p>
+
+      <label>
+        Версии:
+        <textarea name="versions" rows="4" placeholder="1.0.0 | 2026-03-01 | /files/game/v1.0.0/setup.exe | /files/game/v1.0.0/game.AppImage&#10;0.9.0 | 2026-01-15 | /files/game/v0.9.0/setup.exe | "><?php echo htmlspecialchars($form['versions']); ?></textarea>
+      </label>
+
+      <hr>
 
       <button type="submit">Опубликовать</button>
     </form>
