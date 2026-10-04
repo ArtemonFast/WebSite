@@ -5,18 +5,53 @@
 
 <div class="windows-grid">
 
-  <div class="win win--films">
-    <div class="win__titlebar">
-      <span class="win__title">films</span>
-      <span class="win__close">×</span>
-    </div>
-    <div class="win__body">
-      <p class="meta">Скоро тут будут мои фидбеки про фильмы.</p>
-    </div>
-    <div class="win__footer">
-      <a href="/films.php">→ Все фильмы</a>
-    </div>
+<?php
+$filmsFile = $_SERVER['DOCUMENT_ROOT'] . '/data/films.txt';
+$filmsAll = [];
+$filmsCount = 0;
+
+if (is_file($filmsFile)) {
+    $lines = file($filmsFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $entry = json_decode($line, true);
+        if (is_array($entry)) {
+            $filmsAll[] = $entry;
+        }
+    }
+    $filmsAll = array_reverse($filmsAll);
+    $filmsCount = count($filmsAll);
+    $filmsAll = array_slice($filmsAll, 0, 3);
+}
+?>
+<div class="win win--films">
+  <div class="win__titlebar">
+    <span class="win__title">films</span>
+    <span class="win__close">×</span>
   </div>
+  <div class="win__body">
+    <?php if (!empty($filmsAll)): ?>
+    <?php $num = 1; foreach ($filmsAll as $film): ?>
+  <div class="film-preview">
+    <span class="win__list-num">[<?php echo str_pad($num++, 2, '0', STR_PAD_LEFT); ?>]</span>
+    <span class="film-preview__title"><?php echo htmlspecialchars($film['title'] ?? ''); ?></span>
+    <?php
+      $meta = [];
+      if (!empty($film['year'])) $meta[] = $film['year'];
+      if (!empty($film['director'])) $meta[] = $film['director'];
+      if (!empty($meta)):
+    ?>
+      <span class="film-preview__meta">— <?php echo htmlspecialchars(implode(' · ', $meta)); ?></span>
+    <?php endif; ?>
+  </div>
+<?php endforeach; ?>
+    <?php else: ?>
+      <p class="meta">Пока пусто.</p>
+    <?php endif; ?>
+  </div>
+  <div class="win__footer">
+    <a href="/films.php">→ Все фильмы (<?php echo $filmsCount; ?>)</a>
+  </div>
+</div>
 
 <?php
 $musicFile = $_SERVER['DOCUMENT_ROOT'] . '/data/music.txt';

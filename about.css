@@ -227,3 +227,71 @@
 .edit-link:hover {
   color: var(--accent);
 }
+
+/* ===== ФИЛЬМЫ — ПРЕВЬЮ В ОКНЕ ===== */
+.film-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  padding: 4px 0;
+  font-size: 14px;
+  line-height: 1.35;
+  border-bottom: 1px dashed var(--line);
+}
+
+.film-preview:last-child {
+  border-bottom: none;
+}
+
+.film-preview .win__list-num {
+  flex-shrink: 0;
+}
+
+.film-preview__title {
+  color: var(--accent);
+  flex: 1 1 auto;
+}
+
+.film-preview__meta {
+  color: var(--muted);
+  font-size: 13px;
+  flex: 0 0 auto;
+}
+
+/* ===== ФИЛЬМЫ — ПОЛНАЯ СТРАНИЦА ===== */
+.film {
+  padding: 16px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.film:last-child {
+  border-bottom: none;
+}
+
+.film__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.film__title {
+  color: var(--accent);
+  font-size: 22px;
+  font-weight: normal;
+  margin: 0;
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.film__meta {
+  color: var(--muted);
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.film__feedback {
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text);
+}
