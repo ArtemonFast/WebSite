@@ -1,0 +1,3 @@
+{"artist":"Aphex Twin","title":"Selected Ambient Works 85-92","link":"https://aphextwin.warp.net/","note":"Классика эмбиента"}
+{"artist":"Radiohead","title":"OK Computer","link":"https://www.radiohead.com/","note":""}
+{"artist":"Boards of Canada","title":"Music Has the Right to Children","link":"https://boardsofcanada.com/","note":"Тёплый IDM"}

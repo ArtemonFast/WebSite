@@ -51,6 +51,7 @@ if (isset($_GET['logout'])) {
       <ul class="admin-menu">
         <li><a href="/admin-post.php">→ Написать пост</a></li>
         <li><a href="/admin-game.php">→ Добавить игру</a></li>
+        <li><a href="/admin-books.php">→ Добавить книгу</a></li>
         <li><a href="/blog/index.php">→ Блог</a></li>
         <li><a href="/games/index.php">→ Игры</a></li>
         <li><a href="/guestbook.php">→ Гостевая</a></li>

@@ -1,0 +1,3 @@
+{"author":"Михаил Булгаков","title":"Мастер и Маргарита","status":"read","date":"2025-06-01","rating":5,"link":"https://ru.wikipedia.org/wiki/Мастер_и_Маргарита","note":"Перечитываю третий раз."}
+{"author":"Фёдор Достоевский","title":"Преступление и наказание","status":"reading","date":"","rating":0,"link":"","note":""}
+{"author":"Джордж Оруэлл","title":"1984","status":"wishlist","date":"","rating":0,"link":"","note":"Советуют все, надо прочитать."}
