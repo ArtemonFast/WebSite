@@ -1,7 +1,3 @@
-:root {
-
-}
-
 body {
     background-color: black;
     color: white;
@@ -15,10 +11,15 @@ body {
     font-family: "Open Sans", sans-serif;
 }
 
+
 .contents {
     max-width: 900px;
-    margin: 50px auto 50px auto;
+    margin: 100px auto 100px auto;
     display: grid;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(26, 26, 26, 1) 100%);
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: aliceblue;
 }
 
 .site--header {
@@ -26,17 +27,17 @@ body {
     display: flex;
     padding: 100px 0 10px 0;
     justify-content: center;
-    border: 2px solid;
-    border-radius: 5px;
-    border-color: gray;
     grid-row: 1/2;
     grid-column: 1/5;
+    border: 1px solid;
+    border-color: aliceblue;
 }
 
 .navbar {
-    margin: 20px 0;
     grid-row: 2/3;
     grid-column: 1/5;
+    border: 1px solid;
+    border-color: aliceblue;
 }
 
 .navbar--list {
@@ -45,21 +46,18 @@ body {
     margin: auto;
     justify-content: center;
     padding: 30px 0;
-    border: 2px solid;
-    border-radius: 5px;
-    border-color: gray;
 }
 
 aside {
-    background-color: #241445;
     width: 200px;
     padding: 20px;
     font-size: smaller;
     grid-row: 3/3;
+    border: 1px solid;
+    border-color: aliceblue;
 }
 
 main {
-    background-color: #43256E;
     flex: 1;
     padding: 20px;
     order: 2;
