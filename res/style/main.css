@@ -14,7 +14,7 @@ body {
 
 .contents {
     max-width: 900px;
-    margin: 100px auto 100px auto;
+    margin: 100px auto 50px auto;
     display: grid;
     background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(26, 26, 26, 1) 100%);
     border: 1px solid;
