@@ -1,0 +1,91 @@
+body {
+    /* background-color: black; */
+    color: white;
+    margin-top: 0;
+    padding-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    overflow-x: hidden;
+    font-family: "Open Sans", sans-serif;
+    background-image: url("/res/bg/geocities151.gif");
+    background-repeat: repeat;
+    background-position: top left;
+}
+
+.contents {
+    max-width: 900px;
+    margin: 100px auto 50px auto;
+    display: grid;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(26, 26, 26, 1) 100%);
+    border: 1px solid;
+    border-radius: 5px;
+    border-color: aliceblue;
+    box-shadow: 0px 0px 10px wheat;
+}
+
+.site--header {
+    font-size: 20px;
+    display: flex;
+    padding: 100px 0 10px 0;
+    justify-content: center;
+    border: 1px solid;
+    border-color: aliceblue;
+}
+
+.navbar {
+    border: 1px solid;
+    border-color: aliceblue;
+}
+
+.navbar--list {
+    display: flex;
+    gap: 59px;
+    margin: auto;
+    justify-content: center;
+    padding: 30px 0;
+}
+
+.navbar--list-item {
+    font-size: 18px;
+}
+
+a {
+    color: gainsboro;
+}
+
+a:visited {
+    color: white;
+}
+
+ul {
+    list-style:none;
+}
+
+p {
+    color: gainsboro;
+    margin-top: 0;
+}
+
+/* main {
+    padding: 20px;
+    padding: 1000px 0 0 0;
+} */
+
+footer {
+    border: 1px solid;
+    border-color: aliceblue;
+}
+
+.game {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 0 10px 30px;
+    font-size: 16px;
+}
+
+.data {
+    margin: 0 30px 0 0;
+}
