@@ -79,11 +79,11 @@ footer {
     border-color: aliceblue;
 }
 
-.game {
+.logs {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 0 0 10px 30px;
+    margin: 0 0 10px 20px;
     font-size: 16px;
 }
 
