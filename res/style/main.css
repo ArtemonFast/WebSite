@@ -55,7 +55,7 @@ body {
 
 aside {
     width: 200px;
-    padding: 20px;
+    padding: 10px;
     grid-row: 3/3;
     border: 1px solid;
     border-color: aliceblue;
@@ -77,6 +77,22 @@ footer {
     border-color: aliceblue;
 }
 
+.List {
+    overflow: scroll;
+    height: 100px;
+    background-color: #1F1C1C;
+    border: 2px solid white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px wheat;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+.List__contents {
+    list-style-type: disc;
+    font-size: 14px;
+}
 
 .navbar--list-item {
     font-size: 18px;
